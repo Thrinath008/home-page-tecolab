@@ -1,7 +1,5 @@
-'use client';
+'use client';import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
-import tecolab_logo from '@/public/tecolab_logo.png';
 const quotes = [
     "You weren’t just born to learn. You were born to build.",
     "The world is not waiting for your degree. It’s waiting for your impact.",
@@ -43,7 +41,7 @@ const WelcomePage: React.FC = () => {
                 {/* Logo and Button */}
                 <div className="space-y-6 flex flex-col items-center">
                     <img src="/tecolab_logo.jpeg" alt="Tecolab Logo" className="w-60 h-60 object-contain" />
-                    <a href="/register.html" className="relative overflow-hidden px-6 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-full text-white font-semibold group w-[280px] text-center">
+                    <a href="/register" className="relative overflow-hidden px-6 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-full text-white font-semibold group w-[280px] text-center">
                         <span className="block transition-all duration-300 group-hover:translate-x-full group-hover:opacity-0">
                             🚀 Let’s Begin the Journey
                         </span>
