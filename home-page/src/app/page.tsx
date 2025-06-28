@@ -10,6 +10,8 @@ const quotes = [
     "Degrees are static. You are not."
 ];
 
+const colors = ['bg-black','bg-purple-500','bg-lime-300','bg-blue-500','bg-cyan-400','bg-orange-400','bg-pink-400','bg-yellow-400'];
+
 const WelcomePage: React.FC = () => {
     const [currentQuote, setCurrentQuote] = useState(quotes[0]);
 
@@ -28,12 +30,61 @@ const WelcomePage: React.FC = () => {
     return (
         <div className="min-h-screen flex w-full text-white" style={{ fontFamily: 'DM Sans, sans-serif' }}>
             {/* Left Side */}
-            <div className="w-1/2 bg-gray-800 p-10 flex flex-col justify-center items-center text-center space-y-6 relative overflow-hidden">
-                <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_30%_30%,_#ffffff33,_transparent_60%)] z-0" />
-                <h1 className="text-5xl font-bold mb-4 z-10">🌌 Welcome to Tecolab</h1>
-                <div className="space-y-6 text-2xl leading-relaxed italic max-w-2xl transition-all duration-1000 ease-in-out z-10 fade show">
-                    <p>{currentQuote}</p>
+            <div className="w-1/2 bg-slate-900 p-10 flex flex-col justify-between relative">
+              {/* Overlay message and bars */}
+              <div className="absolute inset-0 z-10 pointer-events-none">
+                {/* Top right bar */}
+                <div className="absolute top-4 right-4 w-40 h-2 bg-indigo-500 rounded-full" />
+                {/* Bottom left bar */}
+                <div className="absolute bottom-4 left-4 w-40 h-2 bg-pink-500 rounded-full" />
+              </div>
+
+              {/* Top scrolling list */}
+              <div className="relative w-full h-[160px] overflow-hidden">
+                <div className="w-full h-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_80px,_black_calc(100%-80px),transparent_100%)]">
+                  <ul className="flex items-center justify-start animate-infinite-scroll [&>li]:mx-2 [&>li]:min-w-[150px] [&>li]:h-[150px]">
+                    {colors.map((color, index) => (
+                      <li key={index} className={`flex justify-center items-center text-white font-semibold text-lg ${color}`}>
+                        <span>Block {index + 1}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <ul className="flex items-center justify-start animate-infinite-scroll [&>li]:mx-2 [&>li]:min-w-[150px] [&>li]:h-[150px]" aria-hidden="true">
+                    {colors.map((color, index) => (
+                      <li key={index} className={`flex justify-center items-center text-white font-semibold text-lg ${color}`}>
+                        <span>Block {index + 1}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
+              </div>
+
+              {/* Center message */}
+              <div className="flex-grow flex items-center justify-center z-10">
+                <div className="text-white text-2xl font-bold text-center">
+                  Welcome to Tecolab
+                </div>
+              </div>
+
+              {/* Bottom scrolling list */}
+              <div className="relative w-full h-[160px] overflow-hidden">
+                <div className="w-full h-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_80px,_black_calc(100%-80px),transparent_100%)]">
+                  <ul className="flex items-center justify-start animate-infinite-scroll [&>li]:mx-2 [&>li]:min-w-[150px] [&>li]:h-[150px]">
+                    {colors.map((color, index) => (
+                      <li key={index} className={`flex justify-center items-center text-white font-semibold text-lg ${color}`}>
+                        <span>Block {index + 1}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <ul className="flex items-center justify-start animate-infinite-scroll [&>li]:mx-2 [&>li]:min-w-[150px] [&>li]:h-[150px]" aria-hidden="true">
+                    {colors.map((color, index) => (
+                      <li key={index} className={`flex justify-center items-center text-white font-semibold text-lg ${color}`}>
+                        <span>Block {index + 1}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
             </div>
 
             {/* Right Side */}
@@ -57,15 +108,74 @@ const WelcomePage: React.FC = () => {
                 {/* Login Form */}
                 <div className="w-full max-w-md">
                     <h2 className="text-xl font-semibold mb-4 text-center">Already a member?</h2>
-                    <form action="/dashboard" method="POST" className="space-y-4">
-                        <input type="email" name="email" placeholder="Email" className="w-full px-4 py-2 rounded bg-gray-800 border border-gray-700 focus:outline-none" required />
-                        <input type="password" name="password" placeholder="Password" className="w-full px-4 py-2 rounded bg-gray-800 border border-gray-700 focus:outline-none" required />
-                        <button type="submit" className="w-full px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded text-white font-semibold">
-                            Login
-                        </button>
+                    <form
+                      onSubmit={async (e) => {
+                        e.preventDefault();
+                        const form = new FormData(e.currentTarget);
+                        const email = form.get('email') as string;
+                        const password = form.get('password') as string;
+
+                        try {
+                          const res = await fetch('http://localhost:8000/login', {
+                            method: 'POST',
+                            headers: {
+                              'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: new URLSearchParams({
+                              username: email,
+                              password: password,
+                            }),
+                          });
+
+                          const data = await res.json();
+
+                          if (!res.ok) throw new Error(data.detail || 'Login failed');
+
+                          alert('Login successful!');
+                          // Store token if needed: localStorage.setItem('token', data.access_token);
+                          window.location.href = '/dashboard';
+                        } catch (err: any) {
+                          alert(err.message || 'Login error');
+                        }
+                      }}
+                      className="space-y-4"
+                    >
+                      <input
+                        type="email"
+                        name="email"
+                        placeholder="Email"
+                        className="w-full px-4 py-2 rounded bg-gray-800 border border-gray-700 focus:outline-none"
+                        required
+                      />
+                      <input
+                        type="password"
+                        name="password"
+                        placeholder="Password"
+                        className="w-full px-4 py-2 rounded bg-gray-800 border border-gray-700 focus:outline-none"
+                        required
+                      />
+                      <button
+                        type="submit"
+                        className="w-full px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded text-white font-semibold"
+                      >
+                        Login
+                      </button>
                     </form>
                 </div>
             </div>
+            <style jsx>{`
+              @keyframes infinite-scroll {
+                0% {
+                  transform: translateX(0%);
+                }
+                100% {
+                  transform: translateX(-50%);
+                }
+              }
+              .animate-infinite-scroll {
+                animation: infinite-scroll 20s linear infinite;
+              }
+            `}</style>
         </div>
     );
 };

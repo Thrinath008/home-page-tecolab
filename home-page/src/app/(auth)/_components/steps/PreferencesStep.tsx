@@ -76,7 +76,7 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({ formData, updateFormD
         <select
           value={data.careerGoals}
           onChange={(e) => handleChange('careerGoals', e.target.value)}
-          className="w-full p-3 rounded-md border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#122336] focus:border-[#122336] text-sm"
+          className="w-full p-3 rounded-md border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#122336] focus:border-[#122336] text-sm text-black"
         >
           <option value="">Select your career goal</option>
           <option value="fullstack">Full Stack Developer</option>
@@ -100,7 +100,7 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({ formData, updateFormD
         <select
           value={data.availability}
           onChange={(e) => handleChange('availability', e.target.value)}
-          className="w-full p-3 rounded-md border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#122336] focus:border-[#122336] text-sm"
+          className="w-full p-3 rounded-md border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#122336] focus:border-[#122336] text-sm text-black"
         >
           <option value="">Select your availability</option>
           <option value="fulltime">Full-time (40+ hours/week)</option>
@@ -120,7 +120,7 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({ formData, updateFormD
           value={data.bio}
           onChange={(e) => handleChange('bio', e.target.value)}
           placeholder="Tell us a bit about yourself, your background, and what you're passionate about..."
-          className="w-full p-4 rounded-md border-2 border-gray-300 min-h-[120px] resize-y text-sm focus:outline-none focus:ring-2 focus:ring-[#122336] focus:border-[#122336]"
+          className="w-full p-4 rounded-md border-2 border-gray-300 min-h-[120px] resize-y text-sm focus:outline-none focus:ring-2 focus:ring-[#122336] focus:border-[#122336] text-black"
         />
       </div>
 
