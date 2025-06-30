@@ -24,4 +24,4 @@ app.include_router(users.router)
 @app.get("/")
 def root():
     return {"message": "Welcome to the FastAPI application for Tecolab! please refer to the documentation for more information."}
-    
+

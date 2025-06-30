@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation'; // ✅ Correct import
 import PersonalInfoStep from './steps/PersonalInfoStep';
 import SkillsStep from './steps/SkillsStep';
 import PreferencesStep from './steps/PreferencesStep';
@@ -13,6 +14,7 @@ const steps = [
 const RegistrationStepper = () => {
     const [currentStep, setCurrentStep] = useState(1);
     const [formData, setFormData] = useState({});
+    const router = useRouter(); // ✅ Hook initialization
 
     const updateFormData = (stepData: any) => {
         setFormData((prev) => ({ ...prev, ...stepData }));
@@ -50,17 +52,17 @@ const RegistrationStepper = () => {
                                 >
                                     <div
                                         className={`w-12 h-12 rounded-full flex items-center justify-center font-semibold transition-transform duration-500 ${step.id <= currentStep
-                                                ? 'scale-110 bg-[#122336] border-2 border-green-500 shadow-md'
-                                                : 'bg-black/30 border-2 border-white/30'
-                                            } text-white`}
+                                            ? 'scale-110 bg-[#122336] border-2 border-green-500 shadow-md'
+                                            : 'bg-black/30 border-2 border-white/30'
+                                        } text-white`}
                                     >
                                         {step.id}
                                     </div>
                                     <span
                                         className={`text-sm font-medium mt-2 transition-colors duration-300 ${step.id <= currentStep
-                                                ? 'text-white'
-                                                : 'text-white/70'
-                                            }`}
+                                            ? 'text-white'
+                                            : 'text-white/70'
+                                        }`}
                                     >
                                         {step.title}
                                     </span>
@@ -94,9 +96,9 @@ const RegistrationStepper = () => {
                         onClick={prevStep}
                         disabled={currentStep === 1}
                         className={`relative overflow-hidden px-6 py-3 rounded-full font-semibold group w-[280px] text-center transition-all duration-300 ${currentStep === 1
-                                ? 'cursor-not-allowed opacity-50 bg-white/20 border border-white/30 text-white'
-                                : 'bg-white/20 border border-white/30 text-white hover:bg-white/30'
-                            }`}
+                            ? 'cursor-not-allowed opacity-50 bg-white/20 border border-white/30 text-white'
+                            : 'bg-white/20 border border-white/30 text-white hover:bg-white/30'
+                        }`}
                     >
                         ← Previous
                     </button>
@@ -106,9 +108,9 @@ const RegistrationStepper = () => {
                             <div
                                 key={index}
                                 className={`w-2 h-2 rounded-full transition-all duration-300 ${index + 1 <= currentStep
-                                        ? 'bg-[#122336]'
-                                        : 'bg-white/40'
-                                    }`}
+                                    ? 'bg-[#122336]'
+                                    : 'bg-white/40'
+                                }`}
                             />
                         ))}
                     </div>
@@ -116,7 +118,10 @@ const RegistrationStepper = () => {
                     <button
                         onClick={
                             currentStep === steps.length
-                                ? () => console.log('Submit', formData)
+                                ? () => {
+                                    console.log('Submit', formData);
+                                    router.push('/dashboard'); // ✅ redirect
+                                }
                                 : nextStep
                         }
                         className="relative overflow-hidden px-6 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-full text-white font-semibold group w-[280px] text-center border border-white/30"
@@ -134,28 +139,28 @@ const RegistrationStepper = () => {
             {/* Animations */}
             <style>
                 {`
-          @keyframes rainbow {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-          }
-          .animate-rainbow {
-            background-size: 400% 400%;
-            animation: rainbow 3s ease-in-out infinite;
-          }
-          @keyframes fade-in {
-            from {
-              opacity: 0;
-              transform: translateY(10px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-          .animate-fade-in {
-            animation: fade-in 0.3s ease-out;
-          }
-        `}
+                    @keyframes rainbow {
+                        0%, 100% { background-position: 0% 50%; }
+                        50% { background-position: 100% 50%; }
+                    }
+                    .animate-rainbow {
+                        background-size: 400% 400%;
+                        animation: rainbow 3s ease-in-out infinite;
+                    }
+                    @keyframes fade-in {
+                        from {
+                            opacity: 0;
+                            transform: translateY(10px);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
+                    }
+                    .animate-fade-in {
+                        animation: fade-in 0.3s ease-out;
+                    }
+                `}
             </style>
         </div>
     );
