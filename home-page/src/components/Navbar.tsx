@@ -24,7 +24,7 @@ const navItems = [
 
 export default function Navbar() {
   const [collapsed, setCollapsed] = useState(false);
-  const activeRoute = '/dashboard/hackathons'; // You can make this dynamic using `usePathname()` in Next.js 13+
+  const activeRoute = '/dashboard/dashbord'; // You can make this dynamic using `usePathname()` in Next.js 13+
 
   return (
     <div className={`h-screen bg-[#0c0f1f] text-white flex flex-col transition-all duration-300 ${collapsed ? 'w-20' : 'w-64'}`}>
