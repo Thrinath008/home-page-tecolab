@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, JSON
 from sqlalchemy.orm import relationship
 from database import Base
 from sqlalchemy.sql.sqltypes import TIMESTAMP
@@ -20,3 +20,16 @@ class User(Base):
     wants_to_learn = Column(String, nullable=True)
     
     
+class Project(Base):
+    __tablename__ = "projects"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String, nullable=False)
+    description = Column(String)
+    level = Column(String)
+    duration = Column(String)
+    teamSize = Column(String)
+    skills = Column(JSON)  # store as list in JSON
+    participants = Column(Integer)
+    spots = Column(Integer)
+    image = Column(String)

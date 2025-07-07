@@ -2,7 +2,6 @@
 
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import {
   HomeIcon,
@@ -22,12 +21,17 @@ const navItems = [
   { name: 'Scoring', href: '/dashboard/scoring', icon: StarIcon },
 ];
 
-export default function Navbar() {
-  const [collapsed, setCollapsed] = useState(false);
+export default function Navbar({
+  collapsed,
+  setCollapsed,
+}: {
+  collapsed: boolean;
+  setCollapsed: (val: boolean) => void;
+}) {
   const activeRoute = '/dashboard/dashbord'; // You can make this dynamic using `usePathname()` in Next.js 13+
 
   return (
-    <div className={`h-screen bg-[#0c0f1f] text-white flex flex-col transition-all duration-300 ${collapsed ? 'w-20' : 'w-64'}`}>
+    <div className={`fixed top-0 left-0 h-screen bg-[#0c0f1f] text-white flex flex-col transition-all duration-300 ${collapsed ? 'w-20' : 'w-64'}`}>
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-5 border-b border-gray-700">
         <span className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">

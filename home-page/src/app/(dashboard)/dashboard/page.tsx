@@ -1,3 +1,5 @@
+import { BellIcon } from "@/components/bell";
+
 export default function DashboardPage() {
   return (
     <>
@@ -8,12 +10,15 @@ export default function DashboardPage() {
           <input
             type="text"
             placeholder="Search..."
-            className="h-10 w-full px-4 pr-20 border border-gray-300 rounded-full"
+            className="h-10 text-black w-full px-4 pr-20 border border-red-500 rounded-full"
           />
           <button className="absolute right-1 top-1 h-8 px-4 bg-green-500 text-white rounded-full text-sm">
             Search
           </button>
         </div>
+        <button className="h-10 px-4 bg-blue-500 text-white rounded-full mr-[3px]">
+          <BellIcon className="w-6 h-6" />
+        </button>
 
         {/* Chat button on the far right with tiny spacing */}
         <button className="h-10 px-4 bg-blue-500 text-white rounded-full mr-[3px]">
