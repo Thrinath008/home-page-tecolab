@@ -50,10 +50,10 @@ const SkillsStep: React.FC<SkillsStepProps> = ({ formData, updateFormData }) => 
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-8">
       {/* Header */}
-      <div className="text-center mb-4">
-        <h2 className="text-xl font-bold text-[#122336] mb-2">Skills & Experience</h2>
+      <div className="text-center mb-8">
+        <h2 className="text-2xl font-bold text-[#122336] mb-2">Skills & Experience</h2>
         <p className="text-gray-500">Select your skills and rate your proficiency level</p>
       </div>
 
@@ -69,7 +69,7 @@ const SkillsStep: React.FC<SkillsStepProps> = ({ formData, updateFormData }) => 
               <button
                 key={skill}
                 onClick={() => isSelected ? removeSkill(skill) : addSkill(skill)}
-                className={`px-3 py-1.5 rounded-full text-sm font-medium flex items-center gap-2 transition-transform 
+                className={`px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 transition-transform 
                   ${isSelected ? 'bg-[#122336] text-white' : 'border-2 border-[#122336] text-[#122336] hover:bg-[#122336] hover:text-white'} 
                   transform hover:scale-105`}
               >
@@ -95,7 +95,7 @@ const SkillsStep: React.FC<SkillsStepProps> = ({ formData, updateFormData }) => 
           />
           <button
             onClick={addCustomSkill}
-            className="px-4 py-2 border-2 border-[#122336] rounded-lg text-[#122336] font-semibold hover:bg-[#122336] hover:text-white transition-colors"
+            className="px-4 py-3 border-2 border-[#122336] rounded-lg text-[#122336] font-semibold hover:bg-[#122336] hover:text-white transition-colors"
           >
             +
           </button>

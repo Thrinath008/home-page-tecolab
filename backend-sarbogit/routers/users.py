@@ -1,8 +1,11 @@
 
 from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
-import schemas, models, utils
+import models
+import schemas
+import utils
 from database import get_db
+import oauth2
 router = APIRouter( prefix = "/users", tags = ['Users']) #prefix for all routes in this router will be /users
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.UserOut)
@@ -33,3 +36,9 @@ def get_user(id:int, db: Session = Depends(get_db)):
         raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail = f"User with id {id} does not exist")
     
     return user
+
+
+# Route to get the currently logged-in user's profile
+@router.get("/me", response_model=schemas.UserOut)
+def get_current_user_data(current_user: models.User = Depends(oauth2.get_current_user)):
+    return current_user

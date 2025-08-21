@@ -36,10 +36,10 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({ formData, updateFormD
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-8">
       {/* Header */}
-      <div className="text-center mb-4">
-        <h2 className="text-xl font-bold text-[#122336] mb-1">Preferences & Profile</h2>
+      <div className="text-center mb-6">
+        <h2 className="text-2xl font-bold text-[#122336] mb-1">Preferences & Profile</h2>
         <p className="text-gray-500">Tell us about your interests and preferences</p>
       </div>
 
@@ -76,7 +76,7 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({ formData, updateFormD
         <select
           value={data.careerGoals}
           onChange={(e) => handleChange('careerGoals', e.target.value)}
-          className="w-full p-2 rounded-md border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#122336] focus:border-[#122336] text-sm text-black"
+          className="w-full p-3 rounded-md border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#122336] focus:border-[#122336] text-sm text-black"
         >
           <option value="">Select your career goal</option>
           <option value="fullstack">Full Stack Developer</option>
@@ -100,7 +100,7 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({ formData, updateFormD
         <select
           value={data.availability}
           onChange={(e) => handleChange('availability', e.target.value)}
-          className="w-full p-2 rounded-md border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#122336] focus:border-[#122336] text-sm text-black"
+          className="w-full p-3 rounded-md border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#122336] focus:border-[#122336] text-sm text-black"
         >
           <option value="">Select your availability</option>
           <option value="fulltime">Full-time (40+ hours/week)</option>
@@ -120,7 +120,7 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({ formData, updateFormD
           value={data.bio}
           onChange={(e) => handleChange('bio', e.target.value)}
           placeholder="Tell us a bit about yourself, your background, and what you're passionate about..."
-          className="w-full p-2 rounded-md border-2 border-gray-300 min-h-[120px] resize-y text-sm focus:outline-none focus:ring-2 focus:ring-[#122336] focus:border-[#122336] text-black"
+          className="w-full p-4 rounded-md border-2 border-gray-300 min-h-[120px] resize-y text-sm focus:outline-none focus:ring-2 focus:ring-[#122336] focus:border-[#122336] text-black"
         />
       </div>
 

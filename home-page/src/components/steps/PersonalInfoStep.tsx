@@ -24,18 +24,18 @@ const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({ formData, updateFor
   };
 
   const inputClasses =
-    'w-full px-4 py-2 border-2 border-gray-300 rounded-lg text-sm bg-white transition focus:outline-none focus:border-[#122336] focus:ring-4 focus:ring-[#122336]/10';
+    'w-full px-4 py-3 border-2 border-gray-300 rounded-lg text-sm bg-white transition focus:outline-none focus:border-[#122336] focus:ring-4 focus:ring-[#122336]/10';
 
   const labelClasses = 'flex items-center gap-2 text-[#122336] font-semibold mb-2 text-sm';
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="text-center mb-4">
-        <h2 className="text-xl font-bold text-[#122336] mb-2">Personal Information</h2>
+    <div className="flex flex-col gap-8">
+      <div className="text-center mb-8">
+        <h2 className="text-2xl font-bold text-[#122336] mb-2">Personal Information</h2>
         <p className="text-gray-500">Tell us about yourself and your academic background</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className={labelClasses}>
             <span>👤</span>

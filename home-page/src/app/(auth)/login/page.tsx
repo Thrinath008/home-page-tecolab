@@ -39,50 +39,10 @@ const WelcomePage: React.FC = () => {
                 <div className="absolute bottom-4 left-4 w-40 h-2 bg-pink-500 rounded-full" />
               </div>
 
-              {/* Top scrolling list */}
-              <div className="relative w-full h-[160px] overflow-hidden">
-                <div className="w-full h-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_80px,_black_calc(100%-80px),transparent_100%)]">
-                  <ul className="flex items-center justify-start animate-infinite-scroll [&>li]:mx-2 [&>li]:min-w-[150px] [&>li]:h-[150px]">
-                    {colors.map((color, index) => (
-                      <li key={index} className={`flex justify-center items-center text-white font-semibold text-lg ${color}`}>
-                        <span>Block {index + 1}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <ul className="flex items-center justify-start animate-infinite-scroll [&>li]:mx-2 [&>li]:min-w-[150px] [&>li]:h-[150px]" aria-hidden="true">
-                    {colors.map((color, index) => (
-                      <li key={index} className={`flex justify-center items-center text-white font-semibold text-lg ${color}`}>
-                        <span>Block {index + 1}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
               {/* Center message */}
               <div className="flex-grow flex items-center justify-center z-10">
                 <div className="text-white text-2xl font-bold text-center">
                   Welcome to Tecolab
-                </div>
-              </div>
-
-              {/* Bottom scrolling list */}
-              <div className="relative w-full h-[160px] overflow-hidden">
-                <div className="w-full h-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_80px,_black_calc(100%-80px),transparent_100%)]">
-                  <ul className="flex items-center justify-start animate-infinite-scroll [&>li]:mx-2 [&>li]:min-w-[150px] [&>li]:h-[150px]">
-                    {colors.map((color, index) => (
-                      <li key={index} className={`flex justify-center items-center text-white font-semibold text-lg ${color}`}>
-                        <span>Block {index + 1}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <ul className="flex items-center justify-start animate-infinite-scroll [&>li]:mx-2 [&>li]:min-w-[150px] [&>li]:h-[150px]" aria-hidden="true">
-                    {colors.map((color, index) => (
-                      <li key={index} className={`flex justify-center items-center text-white font-semibold text-lg ${color}`}>
-                        <span>Block {index + 1}</span>
-                      </li>
-                    ))}
-                  </ul>
                 </div>
               </div>
             </div>
@@ -131,8 +91,9 @@ const WelcomePage: React.FC = () => {
 
                           if (!res.ok) throw new Error(data.detail || 'Login failed');
 
+                          // ✅ Store the JWT token in localStorage so we can use it on protected pages
+                          localStorage.setItem('token', data.access_token);
                           alert('Login successful!');
-                          // Store token if needed: localStorage.setItem('token', data.access_token);
                           window.location.href = '/dashboard';
                         } catch (err: any) {
                           alert(err.message || 'Login error');
