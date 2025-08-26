@@ -1,6 +1,7 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Stepper, { Step } from '@/components/ui/stepper';
 
 export default function RegisterPage() {
     const router = useRouter();
@@ -15,8 +16,34 @@ export default function RegisterPage() {
         wants_to_learn: '',
     });
 
+    const [stepValidity, setStepValidity] = useState([false, false, false, false]);
+    const [currentStep, setCurrentStep] = useState(0);
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    useEffect(() => {
+        // Validate each step's fields
+        const stepChecks = [
+            formData.first_name.trim() !== '' && formData.last_name.trim() !== '',
+            formData.email.trim() !== '' && formData.password.trim() !== '',
+            formData.skills.trim() !== '' && formData.goal.trim() !== '',
+            formData.experience.trim() !== '' && formData.wants_to_learn.trim() !== '',
+        ];
+        setStepValidity(stepChecks);
+    }, [formData]);
+
+    const handleNext = () => {
+        if (currentStep < 3 && stepValidity[currentStep]) {
+            setCurrentStep(currentStep + 1);
+        }
+    };
+
+    const handleBack = () => {
+        if (currentStep > 0) {
+            setCurrentStep(currentStep - 1);
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -44,91 +71,151 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-800 to-blue-600">
+        <div className="min-h-screen w-full flex items-center justify-center bg-black">
             <form
                 onSubmit={handleSubmit}
-                className="bg-white p-8 rounded shadow-md w-full max-w-xl space-y-4"
+                className="bg-gray-800 min-h-screen w-full p-12 text-white"
             >
-                <h2 className="text-2xl font-bold text-center text-black mb-4">Register</h2>
+                <h2 className="text-3xl font-bold text-center mb-6">Register</h2>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <input
-                        type="text"
-                        name="first_name"
-                        placeholder="First Name"
-                        onChange={handleChange}
-                        required
-                        className="border px-4 py-2 rounded text-black"
-                    />
-                    <input
-                        type="text"
-                        name="last_name"
-                        placeholder="Last Name"
-                        onChange={handleChange}
-                        required
-                        className="border px-4 py-2 rounded text-black"
-                    />
+                <div className="mx-auto w-full max-w-4xl rounded-2xl shadow-2xl bg-gray-900 p-10 my-8">
+                    <Stepper
+                        className="overflow-y-auto p-6 text-white"
+                        currentStep={currentStep}
+                        onStepChange={setCurrentStep}
+                        controls={
+                            <div className="flex justify-between mt-8">
+                            <button
+                                type="button"
+                                onClick={handleBack}
+                                disabled={currentStep === 0}
+                                className={`px-8 py-4 rounded-full border border-white ${
+                                    currentStep === 0
+                                        ? 'opacity-50 cursor-not-allowed'
+                                        : 'hover:bg-white hover:text-gray-900 transition-colors'
+                                }`}
+                            >
+                                Back
+                            </button>
+                            {currentStep < 3 && (
+                                <button
+                                    type="button"
+                                    onClick={handleNext}
+                                    disabled={!stepValidity[currentStep]}
+                                    className={`px-8 py-4 rounded-full bg-blue-700 text-white hover:bg-blue-800 transition-colors ${
+                                        !stepValidity[currentStep]
+                                            ? 'opacity-50 cursor-not-allowed'
+                                            : ''
+                                    }`}
+                                >
+                                    Next
+                                </button>
+                            )}
+                            {currentStep === 3 && (
+                                <button
+                                    type="submit"
+                                    disabled={!stepValidity[currentStep]}
+                                    className={`px-8 py-4 rounded-full bg-blue-700 text-white hover:bg-blue-800 transition-colors w-full ${
+                                        !stepValidity[currentStep]
+                                            ? 'opacity-50 cursor-not-allowed'
+                                            : ''
+                                    }`}
+                                >
+                                    Register
+                                </button>
+                            )}
+                            </div>
+                        }
+                    >
+                        <Step active={currentStep === 0}>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <input
+                                type="text"
+                                name="first_name"
+                                placeholder="First Name"
+                                onChange={handleChange}
+                                value={formData.first_name}
+                                required
+                                className="bg-gray-800 text-white placeholder-gray-400 border border-gray-700 px-6 py-3 rounded-full"
+                            />
+                            <input
+                                type="text"
+                                name="last_name"
+                                placeholder="Last Name"
+                                onChange={handleChange}
+                                value={formData.last_name}
+                                required
+                                className="bg-gray-800 text-white placeholder-gray-400 border border-gray-700 px-6 py-3 rounded-full"
+                            />
+                        </div>
+                        </Step>
+
+                        <Step active={currentStep === 1}>
+                        <input
+                            type="email"
+                            name="email"
+                            placeholder="Email"
+                            onChange={handleChange}
+                            value={formData.email}
+                            required
+                            className="w-full bg-gray-800 text-white placeholder-gray-400 border border-gray-700 px-6 py-3 rounded-full"
+                        />
+
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="Password"
+                            onChange={handleChange}
+                            value={formData.password}
+                            required
+                            className="w-full bg-gray-800 text-white placeholder-gray-400 border border-gray-700 px-6 py-3 rounded-full mt-6"
+                        />
+                        </Step>
+
+                        <Step active={currentStep === 2}>
+                        <input
+                            type="text"
+                            name="skills"
+                            placeholder="Skills (e.g. Python, ML)"
+                            onChange={handleChange}
+                            value={formData.skills}
+                            required
+                            className="w-full bg-gray-800 text-white placeholder-gray-400 border border-gray-700 px-6 py-3 rounded-full"
+                        />
+
+                        <input
+                            type="text"
+                            name="goal"
+                            placeholder="Your Goal (e.g. Backend Dev)"
+                            onChange={handleChange}
+                            value={formData.goal}
+                            required
+                            className="w-full bg-gray-800 text-white placeholder-gray-400 border border-gray-700 px-6 py-3 rounded-full mt-6"
+                        />
+                        </Step>
+
+                        <Step active={currentStep === 3}>
+                        <input
+                            type="text"
+                            name="experience"
+                            placeholder="Experience (e.g. 1 year freelancing)"
+                            onChange={handleChange}
+                            value={formData.experience}
+                            required
+                            className="w-full bg-gray-800 text-white placeholder-gray-400 border border-gray-700 px-6 py-3 rounded-full"
+                        />
+
+                        <textarea
+                            name="wants_to_learn"
+                            placeholder="What do you want to learn?"
+                            onChange={handleChange}
+                            value={formData.wants_to_learn}
+                            required
+                            className="w-full bg-gray-800 text-white placeholder-gray-400 border border-gray-700 px-6 py-3 rounded-full mt-6"
+                        ></textarea>
+                        </Step>
+                    </Stepper>
                 </div>
-
-                <input
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    onChange={handleChange}
-                    required
-                    className="w-full border px-4 py-2 rounded text-black"
-                />
-
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    onChange={handleChange}
-                    required
-                    className="w-full border px-4 py-2 rounded text-black"
-                />
-
-                <input
-                    type="text"
-                    name="skills"
-                    placeholder="Skills (e.g. Python, ML)"
-                    onChange={handleChange}
-                    required
-                    className="w-full border px-4 py-2 rounded text-black"
-                />
-
-                <input
-                    type="text"
-                    name="goal"
-                    placeholder="Your Goal (e.g. Backend Dev)"
-                    onChange={handleChange}
-                    required
-                    className="w-full border px-4 py-2 rounded text-black"
-                />
-
-                <input
-                    type="text"
-                    name="experience"
-                    placeholder="Experience (e.g. 1 year freelancing)"
-                    onChange={handleChange}
-                    required
-                    className="w-full border px-4 py-2 rounded text-black"
-                />
-
-                <textarea
-                    name="wants_to_learn"
-                    placeholder="What do you want to learn?"
-                    onChange={handleChange}
-                    required
-                    className="w-full border px-4 py-2 rounded text-black"
-                ></textarea>
-
-                <button
-                    type="submit"
-                    className="bg-blue-700 text-black px-6 py-3 rounded w-full hover:bg-blue-800 transition-all"
-                >
-                    Register
-                </button>
             </form>
         </div>
     );
