@@ -23,7 +23,7 @@ const langchainCourse = {
     current: 18,
     total: 30
   },
-  image: "https://images.unsplash.com/photo-1682687220945-7b9c9cc0b312?auto=format&fit=crop&w=800&q=80"
+  image: "https://www.haihai.ai/content/images/size/w1200/2023/05/Hello-World-with-LangChain-and-Python--2-.png"
 }
 
 export default function ProjectsPage() {
