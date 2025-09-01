@@ -121,109 +121,100 @@ function ProjectCard({ project }: { project: Project }) {
   const accent = ACCENTS[project.variant]
 
   return (
-    <Card
-      className="group flex h-full flex-col overflow-hidden rounded-2xl shadow-sm transition-all"
-      style={{
-        background: BRAND.card,
-        borderColor: accent.base,
-        boxShadow: `0 0 0 1px ${accent.base} inset, 0 12px 35px rgba(0,0,0,0.35)`,
-      }}
-    >
-      {/* Cover */}
-      <div
-        className="relative h-40 w-full"
+    <Link href={`/dashboard/projects/${project.id}`} className="h-full">
+      <Card
+        className={cn(
+          "group flex h-full flex-col overflow-hidden rounded-2xl shadow-sm transition-all cursor-pointer"
+        )}
         style={{
-          background: `radial-gradient(120% 100% at 0% 0%, ${accent.soft} 0%, transparent 60%), linear-gradient(120deg, ${accent.base}22, transparent 60%)`,
+          background: BRAND.card,
+          borderColor: accent.base,
+          boxShadow: `0 0 0 1px ${accent.base} inset, 0 12px 35px rgba(0,0,0,0.35)`,
         }}
       >
-        {project.image ? (
-          <Image
-            src={project.image}
-            alt={`${project.title} cover`}
-            fill
-            className="object-cover opacity-90 mix-blend-lighten"
-            sizes="(min-width: 1024px) 33vw, 100vw"
-            priority={false}
-          />
-        ) : null}
-      </div>
-
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between gap-3">
-          <CardTitle className="text-lg">{project.title}</CardTitle>
-          <span
-            className="rounded px-2 py-0.5 text-xs font-semibold"
-            style={{ background: accent.soft, border: `1px solid ${accent.base}` }}
-          >
-            {project.level}
-          </span>
-        </div>
-        <CardDescription className="mt-1 text-sm text-white/70">
-          {project.description}
-        </CardDescription>
-      </CardHeader>
-
-      <CardContent className="pt-0">
-        {/* Skills */}
-        <div className="mt-2 flex flex-wrap gap-2">
-          {project.skills.slice(0, 4).map((skill) => (
-            <span
-              key={skill}
-              className="rounded-full px-3 py-1 text-xs font-medium"
-              style={{ background: accent.soft, border: `1px solid ${accent.base}55` }}
-            >
-              {skill}
-            </span>
-          ))}
-        </div>
-
-        {/* Meta */}
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm text-white/80">
-          <span>📦 {project.modules} Modules</span>
-          <span>⏳ {project.estimated_time}</span>
-          <span>👥 {project.members.current}/{project.members.total} Members</span>
-        </div>
-
-        {/* Learn list (optional demo content) */}
-        <div className="mt-4">
-          <p className="mb-1 text-sm font-semibold text-white">What you'll learn:</p>
-          <ul className="list-inside list-disc text-sm text-white/80">
-            {project.skills.slice(0, 2).map((s) => (
-              <li key={s}>{s}</li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="mt-2 text-xs italic text-white/60">
-          Prerequisites: Basic Python, LLMs, APIs, Prompting
-        </div>
-      </CardContent>
-
-      <CardFooter className="mt-auto flex items-center justify-between">
-        <Link href={`/dashboard/projects/${project.id}`}>
-          <Button
-            variant="outline"
-            className={cn(
-              "text-sm text-white",
-              "border",
-            )}
-            style={{ borderColor: ACCENTS[project.variant].base }}
-          >
-            Details
-          </Button>
-        </Link>
-
-        <Button
-          className="text-sm font-medium"
+        {/* Cover */}
+        <div
+          className="relative h-40 w-full"
           style={{
-            background: accent.base,
-            color: accent.fg,
-            border: `1px solid ${accent.base}`,
+            background: `radial-gradient(120% 100% at 0% 0%, ${accent.soft} 0%, transparent 60%), linear-gradient(120deg, ${accent.base}22, transparent 60%)`,
           }}
         >
-          Join →
-        </Button>
-      </CardFooter>
-    </Card>
+          {project.image ? (
+            <Image
+              src={project.image}
+              alt={`${project.title} cover`}
+              fill
+              className="object-cover opacity-90 mix-blend-lighten"
+              sizes="(min-width: 1024px) 33vw, 100vw"
+              priority={false}
+            />
+          ) : null}
+        </div>
+
+        <CardHeader className="pb-3">
+          <div className="flex items-start justify-between gap-3">
+            <CardTitle className="text-lg">{project.title}</CardTitle>
+            <span
+              className="rounded px-2 py-0.5 text-xs font-semibold"
+              style={{ background: accent.soft, border: `1px solid ${accent.base}` }}
+            >
+              {project.level}
+            </span>
+          </div>
+          <CardDescription className="mt-1 text-sm text-white/70">
+            {project.description}
+          </CardDescription>
+        </CardHeader>
+
+        <CardContent className="pt-0">
+          {/* Skills */}
+          <div className="mt-2 flex flex-wrap gap-2">
+            {project.skills.slice(0, 4).map((skill) => (
+              <span
+                key={skill}
+                className="rounded-full px-3 py-1 text-xs font-medium"
+                style={{ background: accent.soft, border: `1px solid ${accent.base}55` }}
+              >
+                {skill}
+              </span>
+            ))}
+          </div>
+
+          {/* Meta */}
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm text-white/80">
+            <span>📦 {project.modules} Modules</span>
+            <span>⏳ {project.estimated_time}</span>
+            <span>👥 {project.members.current}/{project.members.total} Members</span>
+          </div>
+
+          {/* Learn list (optional demo content) */}
+          <div className="mt-4">
+            <p className="mb-1 text-sm font-semibold text-white">What you'll learn:</p>
+            <ul className="list-inside list-disc text-sm text-white/80">
+              {project.skills.slice(0, 2).map((s) => (
+                <li key={s}>{s}</li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="mt-2 text-xs italic text-white/60">
+            Prerequisites: Basic Python, LLMs, APIs, Prompting
+          </div>
+        </CardContent>
+
+        <CardFooter className="mt-auto flex items-center justify-between">
+          <Button
+            className="text-sm font-medium"
+            style={{
+              background: accent.base,
+              color: accent.fg,
+              border: `1px solid ${accent.base}`,
+            }}
+          >
+            Join →
+          </Button>
+        </CardFooter>
+      </Card>
+    </Link>
   )
 }
