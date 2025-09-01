@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import {
   HomeIcon,
   ClipboardIcon,
@@ -11,85 +10,46 @@ import {
   ArrowRightOnRectangleIcon,
   UserCircleIcon,
 } from '@heroicons/react/24/outline';
+import { useRouter, usePathname } from 'next/navigation';
+import Dock from './Dock';
+import './Dock.css';
 
-const topNavItems = [
-  { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
-  { name: 'Projects', href: '/dashboard/projects', icon: ClipboardIcon },
-  { name: 'Hackathons', href: '/dashboard/hackathons', icon: CalendarIcon },
-  { name: 'Tasks', href: '/dashboard/tasks', icon: ClipboardIcon },
-  { name: 'Community', href: '/dashboard/community', icon: UserGroupIcon },
-  { name: 'Scoring', href: '/dashboard/scoring', icon: StarIcon },
-  { name: 'Settings', href: '/dashboard/settings', icon: Squares2X2Icon },
-];
+export default function Navbar() {
+  const router = useRouter();
+  const pathname = usePathname();
 
-const bottomNavItems = [
-  { name: 'Profile', href: '/dashboard/profile', icon: UserCircleIcon },
-  { name: 'Logout', href: '/logout', icon: ArrowRightOnRectangleIcon },
-];
+  const items = [
+    { icon: <HomeIcon className="h-6 w-6" />, label: 'Dashboard', href: '/dashboard' },
+    { icon: <ClipboardIcon className="h-6 w-6" />, label: 'Projects', href: '/dashboard/projects' },
+    { icon: <CalendarIcon className="h-6 w-6" />, label: 'Hackathons', href: '/dashboard/hackathons' },
+    { icon: <ClipboardIcon className="h-6 w-6" />, label: 'Tasks', href: '/dashboard/tasks' },
+    { icon: <UserGroupIcon className="h-6 w-6" />, label: 'Community', href: '/dashboard/community' },
+    { icon: <StarIcon className="h-6 w-6" />, label: 'Scoring', href: '/dashboard/scoring' },
+    { icon: <Squares2X2Icon className="h-6 w-6" />, label: 'Settings', href: '/dashboard/settings' },
+    { icon: <UserCircleIcon className="h-6 w-6" />, label: 'Profile', href: '/dashboard/profile' },
+    { icon: <ArrowRightOnRectangleIcon className="h-6 w-6" />, label: 'Logout', href: '/logout' },
+  ];
 
-export default function Navbar({
-  collapsed,
-  setCollapsed,
-}: {
-  collapsed: boolean;
-  setCollapsed: (val: boolean) => void;
-}) {
-  const activeRoute = '/dashboard/dashbord'; // Fix this to use usePathname() for actual route matching
+  const dockItems = items.map((item) => ({
+    icon: (
+      <div
+        className={`${
+          pathname === item.href ? 'text-cyan-400' : 'text-gray-300'
+        } transition-colors`}
+      >
+        {item.icon}
+      </div>
+    ),
+    label: item.label,
+    onClick: () => router.push(item.href),
+  }));
 
   return (
-    <div className={`fixed top-0 left-0 h-screen bg-[#0c0f1f] text-white flex flex-col transition-all duration-300 ${collapsed ? 'w-20' : 'w-64'}`}>
-      
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-5 border-b border-gray-700">
-        <span className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">
-          {!collapsed && 'Tecolab'}
-        </span>
-        <button onClick={() => setCollapsed(!collapsed)}>
-          <Squares2X2Icon className="h-6 w-6 text-white" />
-        </button>
-      </div>
-
-      {/* Top Navigation */}
-      <nav className="flex-1 p-2 space-y-2">
-        {topNavItems.map(({ name, href, icon: Icon }) => {
-          const isActive = activeRoute === href;
-          return (
-            <Link key={name} href={href}>
-              <div
-                className={`flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition-all duration-150 ${
-                  isActive
-                    ? 'bg-gradient-to-r from-cyan-600 to-purple-600 text-white border border-purple-400'
-                    : 'hover:bg-gray-800 text-gray-300'
-                }`}
-              >
-                <Icon className="h-5 w-5" />
-                {!collapsed && <span className="text-sm font-medium">{name}</span>}
-              </div>
-            </Link>
-          );
-        })}
-      </nav>
-
-      {/* Bottom Navigation */}
-      <nav className="p-2 space-y-2 mb-4">
-        {bottomNavItems.map(({ name, href, icon: Icon }) => {
-          const isActive = activeRoute === href;
-          return (
-            <Link key={name} href={href}>
-              <div
-                className={`flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition-all duration-150 ${
-                  isActive
-                    ? 'bg-gradient-to-r from-cyan-600 to-purple-600 text-white border border-purple-400'
-                    : 'hover:bg-gray-800 text-gray-300'
-                }`}
-              >
-                <Icon className="h-5 w-5" />
-                {!collapsed && <span className="text-sm font-medium">{name}</span>}
-              </div>
-            </Link>
-          );
-        })}
-      </nav>
-    </div>
+    <Dock
+      items={dockItems}
+      panelHeight={68}
+      baseItemSize={50}
+      magnification={70}
+    />
   );
 }
