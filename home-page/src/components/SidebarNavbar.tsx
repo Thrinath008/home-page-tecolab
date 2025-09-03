@@ -17,9 +17,8 @@ const topNavItems = [
   { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
   { name: 'Projects', href: '/dashboard/projects', icon: ClipboardIcon },
   { name: 'Hackathons', href: '/dashboard/hackathons', icon: CalendarIcon },
-  { name: 'Tasks', href: '/dashboard/tasks', icon: ClipboardIcon },
   { name: 'Community', href: '/dashboard/community', icon: UserGroupIcon },
-  { name: 'Scoring', href: '/dashboard/scoring', icon: StarIcon },
+  { name: 'learning mode', href: '/dashboard/learning', icon: StarIcon },
   { name: 'Settings', href: '/dashboard/settings', icon: Squares2X2Icon },
 ];
 
