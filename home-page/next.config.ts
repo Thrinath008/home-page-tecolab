@@ -17,6 +17,11 @@ const nextConfig = {
         hostname: 'www.haihai.ai',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        pathname: '/**',
+      },
     ],
     formats: ['image/avif', 'image/webp'],
   },
