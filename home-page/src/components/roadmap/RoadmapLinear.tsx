@@ -64,9 +64,9 @@ export default function RoadmapLinear({
   }, [sequence, data.current]);
 
   const gap = density === "compact" ? 48 : density === "spacious" ? 120 : 80;
-  const nodeSize = 22;
-  const milestoneSize = 36;
-  const roadHeight = 3;
+  const nodeSize = 28;
+  const milestoneSize = 50;
+  const roadHeight = 4;
 
   const progressPct = React.useMemo(() => {
     if (!showProgressFill || currentIndex < 0 || sequence.length <= 1) return 0;
@@ -95,19 +95,47 @@ export default function RoadmapLinear({
   const renderDefaultModule = (m: Module) => {
     const state = m.status as NodeState;
     const bg = colorForState(state, tokens);
+
     return (
-      <div
-        className="flex items-center justify-center rounded-xl border"
-        style={{
-          width: milestoneSize,
-          height: milestoneSize,
-          background: tokens.card,
-          borderColor: bg,
-          boxShadow: `0 0 0 2px ${bg} inset`,
-        }}
-        title={m.title}
-      >
-        <span className="text-[10px]" aria-hidden>M</span>
+      <div className="flex flex-col items-center" title={m.title}>
+        <div
+          className="flex items-center justify-center rounded-2xl border transition-transform hover:scale-105"
+          style={{
+            width: milestoneSize,
+            height: milestoneSize,
+            background: tokens.card,
+            borderColor: bg,
+            boxShadow:
+              state === "completed"
+                ? `0 0 10px ${bg}, 0 0 20px ${bg}`
+                : `0 0 0 2px ${bg} inset`,
+          }}
+        >
+          <span className="text-xl">📘</span>
+        </div>
+
+        {/* Title */}
+        <div className="mt-2 w-40 text-center text-sm font-semibold text-blue-300">
+          {m.title}
+        </div>
+
+        {/* Summary */}
+        <div className="mt-1 w-40 text-center text-xs text-gray-400">
+          {m.summary}
+        </div>
+
+        {/* Difficulty Badge */}
+        {m.difficulty && (
+          <span
+            className="mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-medium"
+            style={{
+              backgroundColor: bg,
+              color: state === "locked" ? "#888" : "#fff",
+            }}
+          >
+            {m.difficulty}
+          </span>
+        )}
       </div>
     );
   };
@@ -115,24 +143,48 @@ export default function RoadmapLinear({
   const renderDefaultTopic = (t: Topic) => {
     const state = t.status as NodeState;
     const bg = colorForState(state, tokens);
+
+    const icon =
+      state === "completed"
+        ? "✅"
+        : state === "in-progress"
+        ? "🔄"
+        : state === "locked"
+        ? "🔒"
+        : "🟢";
+
     return (
-      <div
-        className="rounded-full border"
-        style={{
-          width: nodeSize,
-          height: nodeSize,
-          background: tokens.card,
-          borderColor: bg,
-          boxShadow: `0 0 0 2px ${bg} inset`,
-        }}
-        title={t.title}
-      />
+      <div className="flex flex-col items-center" title={t.title}>
+        <div
+          className="flex items-center justify-center rounded-full border transition-transform hover:scale-110"
+          style={{
+            width: nodeSize,
+            height: nodeSize,
+            background: tokens.card,
+            borderColor: bg,
+            boxShadow:
+              state === "completed"
+                ? `0 0 6px ${bg}`
+                : `0 0 0 2px ${bg} inset`,
+          }}
+        >
+          <span className="text-xs">{icon}</span>
+        </div>
+
+        {/* Topic Title */}
+        <div className="mt-1 w-28 text-center text-[10px] text-gray-300">
+          {t.title}
+        </div>
+      </div>
     );
   };
 
   return (
     <div
-      className={"relative w-full overflow-x-auto rounded-2xl border border-white/10 bg-[color:var(--road-bg)] p-6 " + (className ?? "")}
+      className={
+        "relative w-full overflow-x-auto rounded-2xl border border-white/10 bg-[color:var(--road-bg)] p-6 " +
+        (className ?? "")
+      }
       style={{ ["--road-bg" as any]: tokens.surface }}
       onKeyDown={onKeyDown}
       ref={containerRef}
@@ -140,50 +192,76 @@ export default function RoadmapLinear({
       aria-label="Course roadmap"
     >
       <div className="relative mx-4">
+        {/* Road line */}
         <div
           className="absolute left-0 right-0"
-          style={{ top: 18, height: roadHeight, background: tokens.line, borderRadius: 999 }}
+          style={{
+            top: 22,
+            height: roadHeight,
+            background: tokens.line,
+            borderRadius: 999,
+          }}
           aria-hidden
         />
         {showProgressFill && (
           <div
             className="absolute left-0"
             style={{
-              top: 18,
+              top: 22,
               height: roadHeight,
               width: `${progressPct}%`,
-              background: "linear-gradient(90deg, rgba(255,255,255,0.5), rgba(255,255,255,0.1))",
+              background: "linear-gradient(90deg, #3b82f6, #2563eb, #1d4ed8)",
               borderRadius: 999,
+              boxShadow: "0 0 10px rgba(59,130,246,0.7)",
             }}
             aria-hidden
           />
         )}
 
-        <div className="relative flex" style={{ gap: `${gap}px`, paddingLeft: 8, paddingRight: 8, alignItems: "center" }}>
+        {/* Nodes */}
+        <div
+          className="relative flex"
+          style={{
+            gap: `${gap}px`,
+            paddingLeft: 8,
+            paddingRight: 8,
+            alignItems: "center",
+          }}
+        >
           {sequence.map((item, idx) => {
             const isCurrent = idx === currentIndex;
-            const label = item.kind === "module"
-              ? `Module: ${item.module.title} (${item.module.status})`
-              : `Topic: ${item.topic.title} (${item.topic.status})`;
+            const label =
+              item.kind === "module"
+                ? `Module: ${item.module.title} (${item.module.status})`
+                : `Topic: ${item.topic.title} (${item.topic.status})`;
 
             const handleClick = () => {
               if (item.kind === "module") onModuleClick?.(item.module.id);
               else onTopicClick?.(item.module.id, item.topic.id);
             };
 
-            const state = (item.kind === "module" ? item.module.status : item.topic.status) as NodeState;
+            const state = (item.kind === "module"
+              ? item.module.status
+              : item.topic.status) as NodeState;
 
             const nodeEl =
               item.kind === "module"
-                ? (renderModuleNode?.(item.module, state) ?? renderDefaultModule(item.module))
-                : (renderTopicNode?.(item.topic, item.module, state) ?? renderDefaultTopic(item.topic));
+                ? renderModuleNode?.(item.module, state) ??
+                  renderDefaultModule(item.module)
+                : renderTopicNode?.(item.topic, item.module, state) ??
+                  renderDefaultTopic(item.topic);
 
             return (
               <div key={idx} className="relative">
                 {showAvatar && isCurrent && (
-                  <div className="absolute -top-7 left-1/2 -translate-x-1/2" aria-hidden>
-                    <div className="h-6 w-6 rounded-full border border-white/30 bg-white/90 text-[10px] font-semibold text-black shadow">
-                      <div className="flex h-full items-center justify-center">You</div>
+                  <div
+                    className="absolute -top-10 left-1/2 -translate-x-1/2 animate-pulse"
+                    aria-hidden
+                  >
+                    <div className="h-8 w-8 rounded-full border-2 border-blue-400 bg-blue-500 text-xs font-bold text-black shadow-lg">
+                      <div className="flex h-full items-center justify-center">
+                        You
+                      </div>
                     </div>
                   </div>
                 )}
@@ -196,12 +274,9 @@ export default function RoadmapLinear({
                 >
                   {nodeEl}
                 </button>
-                {showLabels && item.kind === "module" && (
-                  <div className="mt-2 -ml-20 w-40 text-center text-xs text-white/80">
-                    {item.module.title}
-                  </div>
+                {renderTooltip && (
+                  <div className="sr-only" aria-live="polite" />
                 )}
-                {renderTooltip && <div className="sr-only" aria-live="polite" />}
               </div>
             );
           })}
@@ -213,9 +288,13 @@ export default function RoadmapLinear({
 
 function colorForState(state: NodeState, t: RoadmapTokens) {
   switch (state) {
-    case "completed": return t.states.completed;
-    case "in-progress": return t.states.inProgress;
-    case "locked": return t.states.locked;
-    default: return t.states.available;
+    case "completed":
+      return t.states.completed;
+    case "in-progress":
+      return t.states.inProgress;
+    case "locked":
+      return t.states.locked;
+    default:
+      return t.states.available;
   }
 }
