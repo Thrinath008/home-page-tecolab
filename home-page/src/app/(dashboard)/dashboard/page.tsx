@@ -15,6 +15,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 import Image from "next/image";
+import Calendar from "@/components/ui/Calendar";
 
 const navLinks = [
   { name: "Dashboard", icon: LayoutDashboard },
@@ -135,48 +136,14 @@ export default function DashboardPage() {
               <div className="text-gray-400 text-sm">{card.desc}</div>
             </div>
           ))}
-        </div>
-        {/* Calendar Section */}
-        <div className="bg-[#161b22] rounded-2xl shadow-lg p-6 mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <div className="text-white font-semibold text-lg">Weekly Calendar</div>
-            <div className="text-gray-400 text-xs">Your learning & activity</div>
-          </div>
-          <div className="grid grid-cols-7 gap-2 text-center text-gray-400 select-none mb-2">
-            {weekDays.map((wd) => (
-              <div key={wd} className="font-semibold">
-                {wd}
-              </div>
-            ))}
-          </div>
-          <div className="grid grid-cols-7 gap-2">
-            {Array.from({ length: totalCells }).map((_, i) => {
-              const dayNum = i - firstDayIndex + 1;
-              const isValidDay = dayNum > 0 && dayNum <= daysInMonth;
-              const isToday = dayNum === today;
-              const eventBadges = eventsByDate[dayNum] || [];
 
-              return (
-                <div
-                  key={i}
-                  className={`aspect-square rounded-lg flex flex-col items-center justify-start p-2 cursor-pointer transition-colors ${
-                    isToday ? "bg-indigo-500 text-white" : "bg-[#1A1A2E] text-gray-300 hover:bg-[#2a2d43]"
-                  }`}
-                >
-                  <div className="text-sm font-semibold">{isValidDay ? dayNum : ""}</div>
-                  <div className="flex space-x-1 mt-1">
-                    {eventBadges.map((colorClass, idx) => (
-                      <span
-                        key={idx}
-                        className={`w-2 h-2 rounded-full ${colorClass}`}
-                        title="Event"
-                      />
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <Calendar
+            month={month}
+            daysInMonth={daysInMonth}
+            firstDayIndex={firstDayIndex}
+            today={today}
+            eventsByDate={eventsByDate}
+          />
         </div>
       </main>
 
