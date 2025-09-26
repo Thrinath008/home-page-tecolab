@@ -1,0 +1,1 @@
+the calander must be dynamic so that it has to get updated every day and the deadlines should be visible and if the team mates shedule a meeting in the chat then we have to show an option to add to calander.

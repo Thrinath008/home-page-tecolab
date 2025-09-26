@@ -6,7 +6,10 @@ import RoadmapLinear from "@/components/roadmap/RoadmapLinear"
 import RoadmapTree from "@/components/roadmap/RoadmapTree"
 import type { CourseRoadmap } from "@/components/roadmap/types"
 import * as React from "react"
-
+import { use } from "react"
+import ReactMarkdown from "react-markdown"
+import LessonLayout from "@/components/LessonLayout"
+import demoData from "@/../public/data/output.json"
 // ===================== DATA CONTRACT =====================
 type ResourceLink = { label: string; url: string }
 type Module = {
@@ -101,11 +104,15 @@ const courses: Course[] = [
 ]
 
 // ===================== PAGE =====================
-export default function ProjectPage({ params }: { params: { id: string } }) {
-  const project = courses.find((c) => c.id === params.id)
+export default function ProjectPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params)
+  const project = courses.find((c) => c.id === id)
   if (!project) return notFound()
 
   const isEntitled = true
+
+  const [started, setStarted] = React.useState(false)
+  const [selectedModule, setSelectedModule] = React.useState<number | null>(null)
 
   // Map modules→topics into CourseRoadmap
   const roadmapData: CourseRoadmap = {
@@ -134,57 +141,89 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
 
   const [view, setView] = React.useState<"linear" | "tree">("linear")
 
-  return (
-    <div className="min-h-screen bg-[#122236] text-white">
-      {/* Hero Section */}
-      <section className="mx-auto max-w-5xl p-6 text-center">
-        <h1 className="mb-4 text-4xl font-extrabold text-blue-400 md:text-5xl">
-          {project.title}
-        </h1>
-        <p className="mb-2 text-lg text-gray-300">{project.description}</p>
-        <div className="mb-6">
-          <span className="inline-block rounded bg-blue-900/40 px-3 py-1 text-sm font-medium text-blue-300">
-            ⏳ Duration: {project.estimated_time}
-          </span>
-        </div>
-        {project.will_learn && (
-          <ul className="mx-auto mt-3 grid max-w-3xl grid-cols-1 gap-2 text-left text-sm text-gray-300 md:grid-cols-3">
-            {project.will_learn.map((it, i) => (
-              <li key={i} className="flex items-start gap-2">
-                <span>✅</span>
-                <span>{it}</span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-
-      {/* Roadmap Section */}
-      <section className="py-8">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6">
-          <h2 className="text-xl font-semibold text-blue-300">Your Roadmap</h2>
-          <RoadmapViewToggle value={view} onChange={setView} labels={{ linear: "Journey", tree: "Map" }} />
-        </div>
-
-        <div className="mx-auto max-w-6xl px-6 pt-4">
-          {view === "linear" ? (
-            <RoadmapLinear
-              data={roadmapData}
-              showLabels
-              showAvatar
-              showProgressFill
-              onModuleClick={(id) => console.log("module", id)}
-              onTopicClick={(mid, tid) => console.log("topic", mid, tid)}
-            />
-          ) : (
-            <RoadmapTree
-              data={roadmapData}
-              onModuleClick={(id) => console.log("module", id)}
-              onTopicClick={(mid, tid) => console.log("topic", mid, tid)}
-            />
+  if (!started) {
+    return (
+      <div className="min-h-screen bg-[#122236] text-white">
+        {/* Hero Section */}
+        <section className="mx-auto max-w-5xl p-6 text-center">
+          <h1 className="mb-4 text-4xl font-extrabold text-blue-400 md:text-5xl">
+            {project.title}
+          </h1>
+          <p className="mb-2 text-lg text-gray-300">{project.description}</p>
+          <div className="mb-6">
+            <span className="inline-block rounded bg-blue-900/40 px-3 py-1 text-sm font-medium text-blue-300">
+              ⏳ Duration: {project.estimated_time}
+            </span>
+          </div>
+          {project.will_learn && (
+            <ul className="mx-auto mt-3 grid max-w-3xl grid-cols-1 gap-2 text-left text-sm text-gray-300 md:grid-cols-3">
+              {project.will_learn.map((it, i) => (
+                <li key={i} className="flex items-start gap-2">
+                  <span>✅</span>
+                  <span>{it}</span>
+                </li>
+              ))}
+            </ul>
           )}
+          <button
+            onClick={() => setStarted(true)}
+            className="mt-8 rounded bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700"
+          >
+            Start/Continue
+          </button>
+        </section>
+      </div>
+    )
+  }
+
+  // started === true: show demoData content only
+  const courseOutline = demoData.course_outline
+  const modules = demoData.modules
+
+  return (
+    <div className="min-h-screen bg-[#122236] text-white p-6 max-w-5xl mx-auto">
+      <h1 className="mb-4 text-4xl font-extrabold text-blue-400 md:text-5xl">
+        {courseOutline.title}
+      </h1>
+      <p className="mb-2 text-lg text-gray-300">{courseOutline.description}</p>
+      <div className="mb-6">
+        <span className="inline-block rounded bg-blue-900/40 px-3 py-1 text-sm font-medium text-blue-300">
+          ⏳ Duration: {courseOutline.estimated_time}
+        </span>
+      </div>
+
+      {selectedModule === null ? (
+        modules && modules.length > 0 ? (
+          <div className="space-y-8">
+            {modules.map((mod: any, idx: number) => (
+              <section key={idx} className="border border-blue-700 rounded p-4">
+                <h2 className="mb-2 text-2xl font-semibold text-blue-300">{mod.title}</h2>
+                <p className="mb-2 text-gray-300">{mod.summary}</p>
+                <button
+                  onClick={() => setSelectedModule(idx)}
+                  className="mt-2 rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700"
+                >
+                  View Details
+                </button>
+              </section>
+            ))}
+          </div>
+        ) : null
+      ) : (
+        <div>
+          <button
+            onClick={() => setSelectedModule(null)}
+            className="mb-4 rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700"
+          >
+            &larr; Back to Modules
+          </button>
+          <LessonLayout
+            title={modules[selectedModule].title}
+            summary={modules[selectedModule].summary}
+            sections={modules[selectedModule].sections}
+          />
         </div>
-      </section>
+      )}
     </div>
   )
 }
