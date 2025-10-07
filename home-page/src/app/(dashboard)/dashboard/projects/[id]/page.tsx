@@ -9,7 +9,7 @@ import * as React from "react"
 import { use } from "react"
 import ReactMarkdown from "react-markdown"
 import LessonLayout from "@/components/LessonLayout"
-import demoData from "@/../public/data/output.json"
+import CodeEditor from "@/components/CodeEditor"
 // ===================== DATA CONTRACT =====================
 type ResourceLink = { label: string; url: string }
 type Module = {
@@ -111,8 +111,148 @@ export default function ProjectPage({ params }: { params: Promise<{ id: string }
 
   const isEntitled = true
 
-  const [started, setStarted] = React.useState(false)
-  const [selectedModule, setSelectedModule] = React.useState<number | null>(null)
+  const modules = [
+    {
+      title: "Module 1: Foundations of LangChain",
+      sections: [
+        {
+          type: "text",
+          heading: "Introduction",
+          content: "Explore the core architecture of LangChain, including LLMs, prompt templates, and output parsers."
+        },
+        {
+          type: "list",
+          heading: "Key Topics",
+          items: [
+            "LangChain architecture (LLMs, prompts, parsers)",
+            "PromptTemplate & OutputParser",
+            "Callbacks & tracing"
+          ]
+        },
+        {
+          type: "code",
+          heading: "PromptTemplate Example",
+          language: "python",
+          content: "from langchain import PromptTemplate\n\ntemplate = \"Translate {text} to French\"\nprompt = PromptTemplate(template=template, input_variables=[\"text\"])\nprint(prompt.format(text=\"Hello\"))"
+        },
+        {
+          type: "resources",
+          heading: "Resources",
+          resources: {
+            docs: [
+              { label: "LangChain Prompt Templates", url: "https://langchain.com/docs/modules/prompts" },
+              { label: "Output Parsers Guide", url: "https://langchain.com/docs/modules/output_parsers" }
+            ],
+            videos: [
+              { label: "LangChain Architecture Overview", url: "https://youtube.com/watch?v=langchain-architecture" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      title: "Module 2: Building and Managing Chains",
+      sections: [
+        {
+          type: "text",
+          heading: "Overview",
+          content: "Learn how to create sequential, parallel, and custom chains with best practices."
+        },
+        {
+          type: "list",
+          heading: "Core Concepts",
+          items: [
+            "LCEL overview",
+            "Sequential vs. Router chains",
+            "Streaming and retries/timeouts"
+          ]
+        },
+        {
+          type: "code",
+          heading: "Sequential Chain Example",
+          language: "python",
+          content: "from langchain.chains import SequentialChain\n\nchain = SequentialChain(chains=[chain1, chain2], input_variables=[\"input\"])\nresult = chain.run(input)"
+        },
+        {
+          type: "exercise",
+          heading: "Exercise",
+          content: "Build a custom chain that combines two LLM calls sequentially."
+        }
+      ]
+    },
+    {
+      title: "Module 3: Retrieval-Augmented Generation (RAG)",
+      sections: [
+        {
+          type: "text",
+          heading: "Introduction",
+          content: "Understand how to integrate vector stores and knowledge retrieval into your pipelines."
+        },
+        {
+          type: "list",
+          heading: "Topics Covered",
+          items: [
+            "Chunking & embeddings",
+            "Vector stores (Pinecone/FAISS)",
+            "Reranking & evaluation"
+          ]
+        },
+        {
+          type: "code",
+          heading: "Vector Store Example",
+          language: "python",
+          content: "from langchain.vectorstores import Pinecone\n\nvectorstore = Pinecone(index_name=\"my-index\")\nquery_result = vectorstore.similarity_search(\"What is LangChain?\")"
+        },
+        {
+          type: "resources",
+          heading: "Additional Resources",
+          resources: {
+            docs: [
+              { label: "RAG with LangChain", url: "https://langchain.com/docs/use_cases/rag" }
+            ],
+            blogs: [
+              { label: "Implementing RAG", url: "https://blog.langchain.com/rag-implementation" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      title: "Module 4: Agents + Tools",
+      sections: [
+        {
+          type: "text",
+          heading: "Overview",
+          content: "Build tool-using agents for autonomous workflows with safety and validation."
+        },
+        {
+          type: "list",
+          heading: "Key Components",
+          items: [
+            "Agent types & planning",
+            "Tool design (safety & validation)",
+            "Memory & persistent state"
+          ]
+        },
+        {
+          type: "code",
+          heading: "Agent Example",
+          language: "python",
+          content: "from langchain.agents import initialize_agent, Tool\n\ntool = Tool(name=\"Search\", func=search_function)\nagent = initialize_agent(tools=[tool], llm=llm, agent_type=\"zero-shot-react-description\")"
+        },
+        {
+          type: "exercise",
+          heading: "Hands-on Exercise",
+          content: "Create an agent that uses a web scraper tool to gather data autonomously."
+        },
+        {
+          type: "summary",
+          heading: "Summary",
+          content: "Agents enable complex workflows by integrating tools, memory, and planning for intelligent automation."
+        }
+      ]
+    }
+  ];
 
   // Map modules→topics into CourseRoadmap
   const roadmapData: CourseRoadmap = {
@@ -139,13 +279,16 @@ export default function ProjectPage({ params }: { params: Promise<{ id: string }
     access: { entitled: isEntitled },
   }
 
+  const [started, setStarted] = React.useState(false)
+  const [selectedModule, setSelectedModule] = React.useState<number | null>(null)
+
   const [view, setView] = React.useState<"linear" | "tree">("linear")
 
   if (!started) {
     return (
       <div className="min-h-screen bg-[#122236] text-white">
         {/* Hero Section */}
-        <section className="mx-auto max-w-5xl p-6 text-center">
+        <section className="mx-auto max-w-7xl p-6 text-center">
           <h1 className="mb-4 text-4xl font-extrabold text-blue-400 md:text-5xl">
             {project.title}
           </h1>
@@ -177,11 +320,78 @@ export default function ProjectPage({ params }: { params: Promise<{ id: string }
   }
 
   // started === true: show demoData content only
-  const courseOutline = demoData.course_outline
-  const modules = demoData.modules
+  const courseOutline = {
+    title: "Mastering LangChain Agents for Intermediate Developers",
+    description: "This 4-week course empowers intermediate Python developers to build, customize, and deploy intelligent AI agents using LangChain. Through modular lessons and hands-on projects, you'll deepen your understanding of agent frameworks, tool integrations, and advanced workflows to craft sophisticated AI solutions."
+  };
+
+  const renderSection = (sec: any, index: number) => {
+    switch (sec.type) {
+      case "code":
+        return (
+          <CodeEditor
+            key={sec.heading || index}
+            language={sec.language || "text"}
+            code={sec.content}
+          />
+        )
+      case "text":
+        return (
+          <section key={sec.heading || index} className="mb-6">
+            {sec.heading && <h3 className="mb-2 text-xl font-semibold text-blue-300">{sec.heading}</h3>}
+            <p className="text-gray-300 whitespace-pre-line">{sec.content}</p>
+          </section>
+        )
+      case "list":
+        return (
+          <section key={sec.heading || index} className="mb-6">
+            {sec.heading && <h3 className="mb-2 text-xl font-semibold text-blue-300">{sec.heading}</h3>}
+            <ul className="list-disc list-inside text-gray-300">
+              {sec.items && sec.items.map((item: string, i: number) => <li key={i}>{item}</li>)}
+            </ul>
+          </section>
+        )
+      case "exercise":
+        return (
+          <section key={sec.heading || index} className="mb-6 p-4 border border-blue-700 rounded bg-blue-900/20">
+            {sec.heading && <h3 className="mb-2 text-xl font-semibold text-blue-300">{sec.heading}</h3>}
+            <p className="text-gray-300">{sec.content}</p>
+          </section>
+        )
+      case "resources":
+        return (
+          <section key={sec.heading || index} className="mb-6">
+            {sec.heading && <h3 className="mb-2 text-xl font-semibold text-blue-300">{sec.heading}</h3>}
+            {sec.resources && Object.entries(sec.resources).map(([category, links]: [string, any]) => (
+              <div key={category} className="mb-2">
+                <h4 className="text-blue-400 capitalize">{category}</h4>
+                <ul className="list-disc list-inside text-gray-300">
+                  {links.map((link: ResourceLink, i: number) => (
+                    <li key={i}>
+                      <a href={link.url} target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-500">
+                        {link.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </section>
+        )
+      case "summary":
+        return (
+          <section key={sec.heading || index} className="mb-6 italic text-gray-400">
+            {sec.heading && <h3 className="mb-2 text-xl font-semibold text-blue-300">{sec.heading}</h3>}
+            <p>{sec.content}</p>
+          </section>
+        )
+      default:
+        return null
+    }
+  }
 
   return (
-    <div className="min-h-screen bg-[#122236] text-white p-6 max-w-5xl mx-auto">
+    <div className="min-h-screen bg-[#122236] text-white p-6 max-w-7xl mx-auto">
       <h1 className="mb-4 text-4xl font-extrabold text-blue-400 md:text-5xl">
         {courseOutline.title}
       </h1>
@@ -194,11 +404,14 @@ export default function ProjectPage({ params }: { params: Promise<{ id: string }
 
       {selectedModule === null ? (
         modules && modules.length > 0 ? (
-          <div className="space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {modules.map((mod: any, idx: number) => (
               <section key={idx} className="border border-blue-700 rounded p-4">
                 <h2 className="mb-2 text-2xl font-semibold text-blue-300">{mod.title}</h2>
-                <p className="mb-2 text-gray-300">{mod.summary}</p>
+                {(() => {
+                  const overview = mod.sections?.find((s:any) => s.type === "text" && s.heading === "Introduction" || s.heading === "Overview");
+                  return overview ? <p className="mb-2 text-gray-300">{overview.content}</p> : null;
+                })()}
                 <button
                   onClick={() => setSelectedModule(idx)}
                   className="mt-2 rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700"
@@ -219,9 +432,9 @@ export default function ProjectPage({ params }: { params: Promise<{ id: string }
           </button>
           <LessonLayout
             title={modules[selectedModule].title}
-            summary={modules[selectedModule].summary}
-            sections={modules[selectedModule].sections}
-          />
+          >
+            {modules[selectedModule].sections?.map((sec: any, idx: number) => renderSection(sec, idx))}
+          </LessonLayout>
         </div>
       )}
     </div>
