@@ -10,6 +10,7 @@ import { use } from "react"
 import ReactMarkdown from "react-markdown"
 import LessonLayout from "@/components/LessonLayout"
 import CodeEditor from "@/components/CodeEditor"
+import ModuleRenderer from "@/components/ModuleRenderer";
 // ===================== DATA CONTRACT =====================
 type ResourceLink = { label: string; url: string }
 type Module = {
@@ -325,70 +326,6 @@ export default function ProjectPage({ params }: { params: Promise<{ id: string }
     description: "This 4-week course empowers intermediate Python developers to build, customize, and deploy intelligent AI agents using LangChain. Through modular lessons and hands-on projects, you'll deepen your understanding of agent frameworks, tool integrations, and advanced workflows to craft sophisticated AI solutions."
   };
 
-  const renderSection = (sec: any, index: number) => {
-    switch (sec.type) {
-      case "code":
-        return (
-          <CodeEditor
-            key={sec.heading || index}
-            language={sec.language || "text"}
-            code={sec.content}
-          />
-        )
-      case "text":
-        return (
-          <section key={sec.heading || index} className="mb-6">
-            {sec.heading && <h3 className="mb-2 text-xl font-semibold text-blue-300">{sec.heading}</h3>}
-            <p className="text-gray-300 whitespace-pre-line">{sec.content}</p>
-          </section>
-        )
-      case "list":
-        return (
-          <section key={sec.heading || index} className="mb-6">
-            {sec.heading && <h3 className="mb-2 text-xl font-semibold text-blue-300">{sec.heading}</h3>}
-            <ul className="list-disc list-inside text-gray-300">
-              {sec.items && sec.items.map((item: string, i: number) => <li key={i}>{item}</li>)}
-            </ul>
-          </section>
-        )
-      case "exercise":
-        return (
-          <section key={sec.heading || index} className="mb-6 p-4 border border-blue-700 rounded bg-blue-900/20">
-            {sec.heading && <h3 className="mb-2 text-xl font-semibold text-blue-300">{sec.heading}</h3>}
-            <p className="text-gray-300">{sec.content}</p>
-          </section>
-        )
-      case "resources":
-        return (
-          <section key={sec.heading || index} className="mb-6">
-            {sec.heading && <h3 className="mb-2 text-xl font-semibold text-blue-300">{sec.heading}</h3>}
-            {sec.resources && Object.entries(sec.resources).map(([category, links]: [string, any]) => (
-              <div key={category} className="mb-2">
-                <h4 className="text-blue-400 capitalize">{category}</h4>
-                <ul className="list-disc list-inside text-gray-300">
-                  {links.map((link: ResourceLink, i: number) => (
-                    <li key={i}>
-                      <a href={link.url} target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-500">
-                        {link.label}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </section>
-        )
-      case "summary":
-        return (
-          <section key={sec.heading || index} className="mb-6 italic text-gray-400">
-            {sec.heading && <h3 className="mb-2 text-xl font-semibold text-blue-300">{sec.heading}</h3>}
-            <p>{sec.content}</p>
-          </section>
-        )
-      default:
-        return null
-    }
-  }
 
   return (
     <div className="min-h-screen bg-[#122236] text-white p-6 max-w-7xl mx-auto">
@@ -430,11 +367,7 @@ export default function ProjectPage({ params }: { params: Promise<{ id: string }
           >
             &larr; Back to Modules
           </button>
-          <LessonLayout
-            title={modules[selectedModule].title}
-          >
-            {modules[selectedModule].sections?.map((sec: any, idx: number) => renderSection(sec, idx))}
-          </LessonLayout>
+          <ModuleRenderer modules={[modules[selectedModule]]} />
         </div>
       )}
     </div>
