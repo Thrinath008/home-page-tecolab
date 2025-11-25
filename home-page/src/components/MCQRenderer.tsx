@@ -15,48 +15,83 @@ const MCQRenderer: React.FC<MCQRendererProps> = ({ mcqs }) => {
   const [selectedAnswers, setSelectedAnswers] = useState<{ [key: number]: string }>({});
   const [results, setResults] = useState<{ [key: number]: boolean | null }>({});
 
-  const handleOptionClick = (index: number, option: string, correctAnswer: string) => {
+  const handleOptionSelect = (index: number, option: string, correctAnswer: string) => {
     const isCorrect = option === correctAnswer;
-    setSelectedAnswers((prev) => ({ ...prev, [index]: option }));
-    setResults((prev) => ({ ...prev, [index]: isCorrect }));
+    setSelectedAnswers(prev => ({ ...prev, [index]: option }));
+    setResults(prev => ({ ...prev, [index]: isCorrect }));
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       {mcqs.map((mcq, index) => (
-        <div key={index} className="p-6 border border-gray-300 rounded-2xl bg-white shadow-sm">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">{mcq.question}</h3>
-          <div className="space-y-2">
-            {mcq.options.map((option, optIndex) => (
-              <button
-                key={optIndex}
-                onClick={() => handleOptionClick(index, option, mcq.answer)}
-                className={`w-full text-left px-4 py-2 rounded-md border text-black ${
-                  selectedAnswers[index] === option
-                    ? results[index]
-                      ? "bg-green-100 border-green-400"
-                      : "bg-red-100 border-red-400"
-                    : "bg-gray-50 border-gray-200 hover:bg-gray-100"
-                }`}
-              >
-                {option}
-              </button>
-            ))}
+        <section
+          key={index}
+          className="rounded-3xl border border-gray-200 bg-white p-6 shadow-lg shadow-gray-100"
+        >
+          <div className="flex items-start gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-semibold">
+              {index + 1}
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold text-gray-900">{mcq.question}</h3>
+              <p className="text-sm text-gray-500 mt-1">Choose the best answer</p>
+            </div>
           </div>
 
+          <div className="mt-6 grid gap-3">
+            {mcq.options.map((option, optIndex) => {
+              const isSelected = selectedAnswers[index] === option;
+              const isCorrect = results[index];
+              const showState = isSelected && isCorrect !== null;
 
-          
+              return (
+                <label key={optIndex} className="cursor-pointer">
+                  <input
+                    type="radio"
+                    name={`mcq-${index}`}
+                    value={option}
+                    checked={isSelected}
+                    onChange={() => handleOptionSelect(index, option, mcq.answer)}
+                    className="sr-only"
+                  />
+                  <div
+                    className={`flex items-center justify-between rounded-2xl border px-4 py-3 text-left text-gray-900 ${
+                      showState
+                        ? isCorrect
+                          ? "border-emerald-400 bg-emerald-50"
+                          : "border-rose-400 bg-rose-50"
+                        : "border-gray-200 bg-gray-50"
+                    }`}
+                  >
+                    <span className="text-base font-medium">{option}</span>
+                    <span
+                      className={`flex h-7 w-7 items-center justify-center rounded-full border text-sm ${
+                        showState
+                          ? isCorrect
+                            ? "border-transparent bg-emerald-500 text-white"
+                            : "border-transparent bg-rose-500 text-white"
+                          : "border-gray-200 bg-white text-gray-400"
+                      }`}
+                    >
+                      {showState ? (isCorrect ? "✓" : "✕") : optIndex + 1}
+                    </span>
+                  </div>
+                </label>
+              );
+            })}
+          </div>
 
           {selectedAnswers[index] && (
             <p
-              className={`mt-3 font-medium ${
-                results[index] ? "text-green-600" : "text-red-600"
+              aria-live="polite"
+              className={`mt-4 text-sm font-semibold ${
+                results[index] ? "text-emerald-600" : "text-rose-600"
               }`}
             >
-              {results[index] ? "Correct!" : "Wrong!"}
+              {results[index] ? "Great job — that's correct!" : "Not quite. Try reviewing the options again."}
             </p>
           )}
-        </div>
+        </section>
       ))}
     </div>
   );
