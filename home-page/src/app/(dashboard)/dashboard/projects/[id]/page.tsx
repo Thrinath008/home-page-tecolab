@@ -11,6 +11,8 @@ import ReactMarkdown from "react-markdown"
 import LessonLayout from "@/components/LessonLayout"
 import CodeEditor from "@/components/CodeEditor"
 import ModuleRenderer from "@/components/ModuleRenderer";
+import MCQRenderer from "@/components/MCQRenderer";
+import { data } from "framer-motion/client"
 // ===================== DATA CONTRACT =====================
 type ResourceLink = { label: string; url: string }
 type Module = {
@@ -112,149 +114,6 @@ export default function ProjectPage({ params }: { params: Promise<{ id: string }
 
   const isEntitled = true
 
-  const modules = [
-    {
-      title: "Module 1: Foundations of LangChain",
-      sections: [
-        {
-          type: "text",
-          heading: "Introduction",
-          content: "Explore the core architecture of LangChain, including LLMs, prompt templates, and output parsers."
-        },
-        {
-          type: "list",
-          heading: "Key Topics",
-          items: [
-            "LangChain architecture (LLMs, prompts, parsers)",
-            "PromptTemplate & OutputParser",
-            "Callbacks & tracing"
-          ]
-        },
-        {
-          type: "code",
-          heading: "PromptTemplate Example",
-          language: "python",
-          content: "from langchain import PromptTemplate\n\ntemplate = \"Translate {text} to French\"\nprompt = PromptTemplate(template=template, input_variables=[\"text\"])\nprint(prompt.format(text=\"Hello\"))"
-        },
-        {
-          type: "resources",
-          heading: "Resources",
-          resources: {
-            docs: [
-              { label: "LangChain Prompt Templates", url: "https://langchain.com/docs/modules/prompts" },
-              { label: "Output Parsers Guide", url: "https://langchain.com/docs/modules/output_parsers" }
-            ],
-            videos: [
-              { label: "LangChain Architecture Overview", url: "https://youtube.com/watch?v=langchain-architecture" }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      title: "Module 2: Building and Managing Chains",
-      sections: [
-        {
-          type: "text",
-          heading: "Overview",
-          content: "Learn how to create sequential, parallel, and custom chains with best practices."
-        },
-        {
-          type: "list",
-          heading: "Core Concepts",
-          items: [
-            "LCEL overview",
-            "Sequential vs. Router chains",
-            "Streaming and retries/timeouts"
-          ]
-        },
-        {
-          type: "code",
-          heading: "Sequential Chain Example",
-          language: "python",
-          content: "from langchain.chains import SequentialChain\n\nchain = SequentialChain(chains=[chain1, chain2], input_variables=[\"input\"])\nresult = chain.run(input)"
-        },
-        {
-          type: "exercise",
-          heading: "Exercise",
-          content: "Build a custom chain that combines two LLM calls sequentially."
-        }
-      ]
-    },
-    {
-      title: "Module 3: Retrieval-Augmented Generation (RAG)",
-      sections: [
-        {
-          type: "text",
-          heading: "Introduction",
-          content: "Understand how to integrate vector stores and knowledge retrieval into your pipelines."
-        },
-        {
-          type: "list",
-          heading: "Topics Covered",
-          items: [
-            "Chunking & embeddings",
-            "Vector stores (Pinecone/FAISS)",
-            "Reranking & evaluation"
-          ]
-        },
-        {
-          type: "code",
-          heading: "Vector Store Example",
-          language: "python",
-          content: "from langchain.vectorstores import Pinecone\n\nvectorstore = Pinecone(index_name=\"my-index\")\nquery_result = vectorstore.similarity_search(\"What is LangChain?\")"
-        },
-        {
-          type: "resources",
-          heading: "Additional Resources",
-          resources: {
-            docs: [
-              { label: "RAG with LangChain", url: "https://langchain.com/docs/use_cases/rag" }
-            ],
-            blogs: [
-              { label: "Implementing RAG", url: "https://blog.langchain.com/rag-implementation" }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      title: "Module 4: Agents + Tools",
-      sections: [
-        {
-          type: "text",
-          heading: "Overview",
-          content: "Build tool-using agents for autonomous workflows with safety and validation."
-        },
-        {
-          type: "list",
-          heading: "Key Components",
-          items: [
-            "Agent types & planning",
-            "Tool design (safety & validation)",
-            "Memory & persistent state"
-          ]
-        },
-        {
-          type: "code",
-          heading: "Agent Example",
-          language: "python",
-          content: "from langchain.agents import initialize_agent, Tool\n\ntool = Tool(name=\"Search\", func=search_function)\nagent = initialize_agent(tools=[tool], llm=llm, agent_type=\"zero-shot-react-description\")"
-        },
-        {
-          type: "exercise",
-          heading: "Hands-on Exercise",
-          content: "Create an agent that uses a web scraper tool to gather data autonomously."
-        },
-        {
-          type: "summary",
-          heading: "Summary",
-          content: "Agents enable complex workflows by integrating tools, memory, and planning for intelligent automation."
-        }
-      ]
-    }
-  ];
-
   // Map modules→topics into CourseRoadmap
   const roadmapData: CourseRoadmap = {
     courseId: project.id,
@@ -284,6 +143,21 @@ export default function ProjectPage({ params }: { params: Promise<{ id: string }
   const [selectedModule, setSelectedModule] = React.useState<number | null>(null)
 
   const [view, setView] = React.useState<"linear" | "tree">("linear")
+
+  const [modules, setModules] = React.useState<any[]>([]);
+  const [mcqs, setMcqs] = React.useState<any[]>([]);
+
+  // const [topics, setTopics] = React.useState<any[]>([]);
+
+  React.useEffect(() => {
+    fetch("/data/output.json")
+      .then(res => res.json())
+      .then(data => {
+        setModules(data.modules);
+        setMcqs(data.mcqs || []);
+      });
+      // .then(topic => setTopics(topic.course_outline));
+  }, []);
 
   if (!started) {
     return (
@@ -335,7 +209,7 @@ export default function ProjectPage({ params }: { params: Promise<{ id: string }
       <p className="mb-2 text-lg text-gray-300">{courseOutline.description}</p>
       <div className="mb-6">
         <span className="inline-block rounded bg-blue-900/40 px-3 py-1 text-sm font-medium text-blue-300">
-          ⏳ Duration: {courseOutline.estimated_time}
+          ⏳ Duration: {}
         </span>
       </div>
 
@@ -346,7 +220,7 @@ export default function ProjectPage({ params }: { params: Promise<{ id: string }
               <section key={idx} className="border border-blue-700 rounded p-4">
                 <h2 className="mb-2 text-2xl font-semibold text-blue-300">{mod.title}</h2>
                 {(() => {
-                  const overview = mod.sections?.find((s:any) => s.type === "text" && s.heading === "Introduction" || s.heading === "Overview");
+                  const overview = mod.sections?.find((s:any) => s.type === "text" && (s.heading === "Introduction" || s.heading === "Overview"));
                   return overview ? <p className="mb-2 text-gray-300">{overview.content}</p> : null;
                 })()}
                 <button
@@ -368,6 +242,12 @@ export default function ProjectPage({ params }: { params: Promise<{ id: string }
             &larr; Back to Modules
           </button>
           <ModuleRenderer modules={[modules[selectedModule]]} />
+          {mcqs.length > 0 && (
+            <div className="mt-10">
+              <h2 className="text-2xl font-semibold text-blue-300 mb-4">Quick Quiz</h2>
+              <MCQRenderer mcqs={mcqs} />
+            </div>
+          )}
         </div>
       )}
     </div>

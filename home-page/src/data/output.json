@@ -1,8 +1,7 @@
 {
   "course_outline": {
     "title": "Mastering LangChain Agents for Intermediate Developers",
-    "description": "This 4-week course empowers intermediate Python developers to build, customize, and deploy intelligent AI agents using LangChain. Through modular lessons and hands-on projects, you'll deepen your understanding of agent frameworks, tool integrations, and advanced workflows to craft sophisticated AI solutions.",
-    "time": "2 weeks"
+    "description": "This 4-week course empowers intermediate Python developers to build, customize, and deploy intelligent AI agents using LangChain. Through modular lessons and hands-on projects, you'll deepen your understanding of agent frameworks, tool integrations, and advanced workflows to craft sophisticated AI solutions."
   },
   "modules": [
     {
@@ -217,39 +216,6 @@
           ]
         }
       ]
-    }
-  ]
-  ,
-  "mcqs": [
-    {
-      "question": "What is the primary purpose of a LangChain agent?",
-      "options": [
-        "To generate images using AI",
-        "To make decisions and invoke tools based on input",
-        "To translate languages",
-        "To train machine learning models"
-      ],
-      "answer": "To make decisions and invoke tools based on input"
-    },
-    {
-      "question": "Which Python class is commonly used to initialize LangChain agents?",
-      "options": [
-        "AgentManager",
-        "initialize_agent",
-        "LangChainAgent",
-        "AgentCreator"
-      ],
-      "answer": "initialize_agent"
-    },
-    {
-      "question": "What is a 'Tool' in the context of LangChain?",
-      "options": [
-        "An external function or API that an agent can call",
-        "A debugging feature in Python",
-        "A data visualization utility",
-        "An AI model trainer"
-      ],
-      "answer": "An external function or API that an agent can call"
     }
   ]
 }
